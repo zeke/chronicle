@@ -8,8 +8,8 @@ Gem::Specification.new do |s|
   s.authors     = ["Zeke Sikelianos"]
   s.email       = ["zeke@sikelianos.com"]
   s.homepage    = "http://zeke.sikelianos.com"
-  s.summary     = %q{Chronicle groups collections of ActiveRecord objects into chronologically ordered hashes.}
-  s.description = %q{Chronicle groups collections of ActiveRecord objects into chronologically ordered hashes.}
+  s.summary     = %q{Chronicle groups collections of ruby objects into time periods.}
+  s.description = %q{Chronicle groups collections of ruby objects into time periods.}
 
   s.rubyforge_project = "chronicle"
 
