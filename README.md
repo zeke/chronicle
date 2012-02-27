@@ -29,6 +29,10 @@ to keep the hash order consistent.
 }
 ```
 
+Here's an example use case:
+
+!["Chronicle on Sniphr"](http://f.cl.ly/items/2I2q0P0w2Z2r0D0d390D/chronicle.png "Chronicle on Sniphr")
+
 Installation
 ------------
 
