@@ -1,37 +1,28 @@
 Chronicle
 =========
 
-Chronicle groups collections of ActiveRecord objects into chronologically ordered hashes.
-It uses [Chronic](https://github.com/mojombo/chronic/) to parse natural language dates 
+Chronicle groups collections of ruby objects into time periods.
+It uses [Chronic](https://github.com/mojombo/chronic/) to parse natural language date strings
 and [ActiveSupport::OrderedHash](http://apidock.com/rails/ActiveSupport/OrderedHash)
-to keep the hash order consistent.
+to preserve the hash order.
 
 ```ruby
-# Before...
-[
-  object_1,
-  object_2,
-  object_3,
-  object_4,
-  object_5,
-  object_6,
-  object_7,
-  object_8
-]
+# Before:
+[obj_1, obj_2, obj_3, obj_4, obj_5, obj_6, obj_7, obj_8, obj_9, obj_10]
 
-# After... 
+# After:
 {
-  "just now": [object_10, object_9],
-  "two hours ago": [object_8, object_7, object_6],
-  "yesterday": [object_5, object_4, object_3],
-  "6 months ago": [object_2],
-  "1 year ago": [object_1]
+  "just now": [obj_10, obj_9],
+  "two hours ago": [obj_8, obj_7, obj_6],
+  "yesterday": [obj_5, obj_4, obj_3],
+  "6 months ago": [obj_2],
+  "1 year ago": [obj_1]
 }
 ```
 
-Here's an example use case:
+An example UI using Chronicle:
 
-!["Chronicle on Sniphr"](http://f.cl.ly/items/2I2q0P0w2Z2r0D0d390D/chronicle.png "Chronicle on Sniphr")
+[ !["Chronicle on Sniphr"](http://f.cl.ly/items/2I2q0P0w2Z2r0D0d390D/chronicle.png "Chronicle on Sniphr") ](http://sniphr.com "Sniphr")
 
 Installation
 ------------
@@ -57,6 +48,9 @@ chronicle = Chronicle.new(things, :eras => ["5 minutes ago", "2 hours ago", "thr
 # To sort based on an attribute other than :created_at
 chronicle = Chronicle.new(things, :date_attr => :updated_at)
 ```
+
+To see the default `eras` used by Chronicle, have a look at 
+[chronicle.rb](https://github.com/zeke/chronicle/blob/master/lib/chronicle.rb#L16).
 
 License
 -------
