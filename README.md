@@ -4,7 +4,7 @@ Chronicle
 Chronicle groups collections of ActiveRecord objects into chronologically ordered hashes.
 It uses [Chronic](https://github.com/mojombo/chronic/) to parse natural language dates 
 and [ActiveSupport::OrderedHash](http://apidock.com/rails/ActiveSupport/OrderedHash)
-to keep buckets in a predictable order.
+to keep the hash order consistent.
 
 ```ruby
 # Before...
@@ -48,7 +48,7 @@ things = Thing.all
 chronicle = Chronicle.new(things)
 
 # To deviate from the default eras...
-chronicle = Chronicle.new(things, :eras => ["5 minutes ago", 2 hours ago", "three weeks ago"])
+chronicle = Chronicle.new(things, :eras => ["5 minutes ago", "2 hours ago", "three weeks ago"])
 
 # To sort based on an attribute other than :created_at
 chronicle = Chronicle.new(things, :date_attr => :updated_at)
