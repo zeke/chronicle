@@ -21,11 +21,11 @@ describe Chronicle do
   
   it "sorts era keys from newest to oldest" do
     @chronicle.keys.first.should == 'just now'
-    @chronicle.keys.last.should == 'one month ago'
+    @chronicle.keys.last.should == '1 month ago'
   end
   
   it "sorts objects in eras from newest to oldest" do
-    era = @chronicle['one week ago']
+    era = @chronicle['1 week ago']
     era.size.should == 2
     era.last.created_at.should be < era.first.created_at
   end
@@ -75,7 +75,7 @@ describe Chronicle do
     it "allows an alternative to created_at" do
       @chronicle = Chronicle.new(@things, :date_attr => :updated_at)
       @chronicle.values.flatten.size.should == @things.size
-      @chronicle.keys.last.should == 'one year ago'
+      @chronicle.keys.last.should == '1 year ago'
       @chronicle.keys.first.should == 'just now'
     end
   
