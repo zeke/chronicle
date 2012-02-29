@@ -24,5 +24,4 @@ Gem::Specification.new do |s|
   s.add_development_dependency 'autotest'
 
   s.add_runtime_dependency "chronic"
-  s.add_dependency 'rails'
 end

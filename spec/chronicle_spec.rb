@@ -3,12 +3,15 @@ require 'spec_helper'
 describe Chronicle do
 
   before(:each) do
+    minute = 60
+    hour = minute*60
+    day = hour*24
     @things = [
-      double("thing", :created_at => 39.days.ago),
-      double("thing", :created_at => 8.days.ago),
-      double("thing", :created_at => 9.days.ago),
-      double("thing", :created_at => 3.days.ago),
-      double("thing", :created_at => 10.minutes.ago),
+      double("thing", :created_at => Time.now - 39*day),
+      double("thing", :created_at => Time.now - 8*day),
+      double("thing", :created_at => Time.now - 9*day),
+      double("thing", :created_at => Time.now - 3*day),
+      double("thing", :created_at => Time.now - 10*minute),
       double("thing", :created_at => Time.now)
     ]
     
@@ -16,7 +19,7 @@ describe Chronicle do
   end
 
   it "doesn't have any empty eras" do
-    @chronicle.values.all? {|v| v.present? }.should == true
+    @chronicle.values.all? {|v| !v.empty? }.should == true
   end
   
   it "sorts era keys from newest to oldest" do
@@ -36,7 +39,7 @@ describe Chronicle do
   
   it "accounts for objects that were just created" do
     now = @chronicle['just now']
-    now.should_not be_blank
+    now.should_not be_empty
     now.should be_an(Array)
     now.first.should == @things.last
   end
@@ -62,12 +65,15 @@ describe Chronicle do
   context "custom date attribute" do
     
     before(:each) do
+      minute = 60
+      hour = minute*60
+      day = hour*24
       @things = [
-        double("thing", :updated_at => 369.days.ago, :created_at => nil),
-        double("thing", :updated_at => 9.days.ago, :created_at => nil),
-        double("thing", :updated_at => 8.days.ago, :created_at => nil),
-        double("thing", :updated_at => 3.days.ago, :created_at => nil),
-        double("thing", :updated_at => 10.minutes.ago, :created_at => nil),
+        double("thing", :updated_at => Time.now - 369*day, :created_at => nil),
+        double("thing", :updated_at => Time.now - 9*day, :created_at => nil),
+        double("thing", :updated_at => Time.now - 8*day, :created_at => nil),
+        double("thing", :updated_at => Time.now - 3*day, :created_at => nil),
+        double("thing", :updated_at => Time.now - 10*minute, :created_at => nil),
         double("thing", :updated_at => Time.now, :created_at => nil)
       ]
     end

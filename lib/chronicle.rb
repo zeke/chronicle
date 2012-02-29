@@ -1,6 +1,5 @@
 require 'rubygems'
 require 'chronic'
-require 'active_support/all' # OrderedHash
 require 'chronicle'
 
 module Chronicle
@@ -56,7 +55,7 @@ module Chronicle
     ]
   end
 
-  class ChronicleHash < ActiveSupport::OrderedHash
+  class ChronicleHash < Hash
 
     def initialize(collection, options)
       
@@ -73,7 +72,7 @@ module Chronicle
       # Sort eras oldest to newest
       eras = eras.sort_by {|era| Chronic.parse(era) }
     
-      # Initialize all OrderedHash keys chronologically (newest to oldest)
+      # Initialize all hash keys chronologically (newest to oldest)
       eras.reverse.each {|era| self[era] = [] }
 
       # Find the oldest era in which each object was created
@@ -83,7 +82,7 @@ module Chronicle
       end
     
       # Remove keys for empty eras
-      self.keys.each {|k| self.delete(k) if self[k].blank? }
+      self.keys.each {|k| self.delete(k) if self[k].empty? }
     
       self
     end

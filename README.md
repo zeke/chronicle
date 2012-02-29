@@ -2,9 +2,7 @@ Chronicle
 =========
 
 Chronicle groups collections of ruby objects into time periods.
-It uses [Chronic](https://github.com/mojombo/chronic/) to parse natural language date strings
-and [ActiveSupport::OrderedHash](http://apidock.com/rails/ActiveSupport/OrderedHash)
-to preserve the hash order.
+It uses [Chronic](https://github.com/mojombo/chronic/) to parse natural language date strings.
 
 ```ruby
 # Before:
@@ -20,7 +18,9 @@ to preserve the hash order.
 }
 ```
 
-An example UI using Chronicle:
+Chronicle was created for [Sniphr](http://sniphr.com), a pet project of mine that makes 
+bookmarking awesome. I wanted to reduce UI chatter by displaying a minimal timeline 
+beside the content, instead of a timestamp under every element. Here's what it looks like:
 
 [ !["Chronicle on Sniphr"](http://f.cl.ly/items/2I2q0P0w2Z2r0D0d390D/chronicle.png "Chronicle on Sniphr") ](http://sniphr.com "Sniphr")
 
@@ -29,6 +29,7 @@ Installation
 
 ```ruby
 # Put this in your Gemfile and smoke it.
+# Ruby 1.9 or greater is required, because chronicle relies on ordered hashes.
 gem 'chronicle'
 ```
 
