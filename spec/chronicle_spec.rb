@@ -3,15 +3,15 @@ require 'spec_helper'
 describe Chronicle do
 
   before(:each) do
-    minute = 60
-    hour = minute*60
-    day = hour*24
+    @minute = 60
+    @hour = @minute*60
+    @day = @hour*24
     @things = [
-      double("thing", :created_at => Time.now - 39*day),
-      double("thing", :created_at => Time.now - 8*day),
-      double("thing", :created_at => Time.now - 9*day),
-      double("thing", :created_at => Time.now - 3*day),
-      double("thing", :created_at => Time.now - 10*minute),
+      double("thing", :created_at => Time.now - 39*@day),
+      double("thing", :created_at => Time.now - 8*@day),
+      double("thing", :created_at => Time.now - 9*@day),
+      double("thing", :created_at => Time.now - 3*@day),
+      double("thing", :created_at => Time.now - 10*@minute),
       double("thing", :created_at => Time.now)
     ]
     
@@ -65,15 +65,12 @@ describe Chronicle do
   context "custom date attribute" do
     
     before(:each) do
-      minute = 60
-      hour = minute*60
-      day = hour*24
       @things = [
-        double("thing", :updated_at => Time.now - 369*day, :created_at => nil),
-        double("thing", :updated_at => Time.now - 9*day, :created_at => nil),
-        double("thing", :updated_at => Time.now - 8*day, :created_at => nil),
-        double("thing", :updated_at => Time.now - 3*day, :created_at => nil),
-        double("thing", :updated_at => Time.now - 10*minute, :created_at => nil),
+        double("thing", :updated_at => Time.now - 369*@day, :created_at => nil),
+        double("thing", :updated_at => Time.now - 9*@day, :created_at => nil),
+        double("thing", :updated_at => Time.now - 8*@day, :created_at => nil),
+        double("thing", :updated_at => Time.now - 3*@day, :created_at => nil),
+        double("thing", :updated_at => Time.now - 10*@minute, :created_at => nil),
         double("thing", :updated_at => Time.now, :created_at => nil)
       ]
     end
@@ -83,6 +80,16 @@ describe Chronicle do
       @chronicle.values.flatten.size.should == @things.size
       @chronicle.keys.last.should == '1 year ago'
       @chronicle.keys.first.should == 'just now'
+    end
+    
+    it "gracefully ignores objects with nil timestamps" do
+      @things = [
+        double("thing", :updated_at => Time.now - 369*@day),
+        double("thing", :updated_at => Time.now - 9*@day),
+        double("thing", :updated_at => nil)
+      ]
+      @chronicle = Chronicle.new(@things, :date_attr => :updated_at)
+      @chronicle.size.should == 2
     end
   
   end
