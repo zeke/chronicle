@@ -71,6 +71,9 @@ module Chronicle
       
       # Sort eras oldest to newest
       eras = eras.sort_by {|era| Chronic.parse(era) }
+
+      era_to_date = eras.inject({}) {|h,e| h[e] = Chronic.parse(e); h }
+
     
       # Initialize all hash keys chronologically (newest to oldest)
       eras.reverse.each {|era| self[era] = [] }
@@ -80,7 +83,7 @@ module Chronicle
 
       # Find the oldest era in which each object was created
       collection.sort_by {|obj| obj.send(options[:date_attr])}.reverse.each do |obj|
-        era = eras.find {|era| obj.send(options[:date_attr]) < Chronic.parse(era) }
+        era = eras.find {|era| obj.send(options[:date_attr]) < era_to_date[era]  }
         self[era] << obj
       end
     
