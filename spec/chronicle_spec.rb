@@ -56,7 +56,7 @@ describe Chronicle do
       @chronicle.keys.should == ['just now', '3 minutes ago', '35 days ago']
     end
     
-    it "raises an exception for eras that cannot be parse" do
+    it "raises an exception for eras that cannot be parsed" do
       expect { Chronicle.new(@things, :eras => ['63 eons hence']) }.to raise_error("Could not parse era: 63 eons hence")
     end
     
@@ -93,5 +93,40 @@ describe Chronicle do
     end
   
   end
+  
+  context "future dates" do
+    
+    before(:each) do
+      @things = [
+        double("thing", :created_at => Time.now + 39*@day),
+        double("thing", :created_at => Time.now + 8*@day),
+        double("thing", :created_at => Time.now + 9*@day),
+        double("thing", :created_at => Time.now + 3*@day),
+        double("thing", :created_at => Time.now + 9*@minute),
+      ]
+      @chronicle = Chronicle.new(@things, order: :asc)
+    end
+
+    it "doesn't have any empty eras" do
+      @chronicle.values.all? {|v| !v.empty? }.should == true
+    end
+      
+    it "sorts era keys from oldest to newest" do
+      @chronicle.keys.first.should == '5 minutes from now'
+      @chronicle.keys.last.should == '1 month from now'
+    end
+      
+    it "sorts objects in eras from oldest to newest" do
+      era = @chronicle['1 week from now']
+      era.size.should == 2
+      era.last.created_at.should be > era.first.created_at
+    end
+      
+    it "doesn't lose any items during processing" do
+      @chronicle.values.flatten.size.should == @things.size
+    end
+    
+  end
+
 
 end
