@@ -53,6 +53,14 @@ chronicle = Chronicle.new(things, :date_attr => :updated_at)
 To see the default `eras` used by Chronicle, have a look at 
 [chronicle.rb](https://github.com/zeke/chronicle/blob/master/lib/chronicle.rb#L16).
 
+Other Noteworthy Time Tools
+---------------------------
+
+- [chronic_between](https://github.com/jrobertson/chronic_between), a natural language parser for validating complex date ranges.
+- [chronic_duration](https://github.com/hpoydar/chronic_duration), a simple Ruby natural language parser for elapsed time
+- [kronic](https://github.com/xaviershay/kronic), a dirt simple library for parsing and formatting human readable dates (Today, Yesterday, Last Monday). 
+  Both a ruby and a javascript implementation are included.
+
 License
 -------
 
