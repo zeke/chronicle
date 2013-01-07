@@ -51,7 +51,7 @@ module Chronicle
       "3 minutes ago",
       "2 minutes ago",
       "1 minute ago",
-      "just now",
+      "right now",
       "1 minute from now",
       "2 minutes from now",
       "3 minutes from now",
@@ -98,59 +98,60 @@ module Chronicle
     def initialize(collection, options)
       
       eras = options[:eras]
-      
-      # Sort order, defaut is new to old
-      order = options[:order] || :desc
-      
+            
       # Remove objects with nil timestamps
-      collection = collection.reject {|obj| obj.send(options[:date_attr]).nil? }
+      collection.reject! {|obj| obj.send(options[:date_attr]).nil? }
+      
+      # Determine whether collection contains future or past timestamps
+      if collection.all? { |obj| obj.send(options[:date_attr]) < Time.now }
+        order = :past
+      elsif collection.all? { |obj| obj.send(options[:date_attr]) > Time.now }
+        order = :future
+      else
+        raise "Chronicle collections must be entirely in the past or the future."
+      end
             
       # Sort collection by date
-      collection = collection.sort_by {|obj| obj.send(options[:date_attr])}
-      collection = collection.reverse if order == :desc
+      # For past collections, newest objects come first 
+      # For future collections, oldest objects come first
+      collection = collection.sort_by {|obj| obj.send(options[:date_attr]) }
+      collection.reverse! if order == :past
+
+      # Force inclusion of 'now' era in case it's missing.
+      eras.push('right now').uniq!
       
+      # Parse era strings using Chronic
       # Ensure all eras can be parsed
-      eras.each do |era|
-        raise "Could not parse era: #{era}" if Chronic.parse(era).nil?
-      end
+      # { "7 years ago" => 2006-01-02 23:29:05 -0800, ... }
+      era_date_pairs = eras.inject({}) {|h,era|
+        h[era] = Chronic.parse(era)
+        raise "Could not parse era: #{era}" if h[era].nil?
+        h
+      }
 
-      if order == :desc && Time.now > collection.first.send(options[:date_attr])
-        eras << "just now" 
-      end
+      # Sort eras by date
+      # For past collections, newest eras come first
+      # For future collections, oldest eras come first
+      eras = eras.sort_by {|era| era_date_pairs[era] }
+      eras.reverse! if order == :future
+    
+      # Initialize all hash keys chronologically
+      eras.reverse.each {|era| self[era] = [] }
       
-      # Parse date strings
-      # { "7 years ago"=>2006-01-02 23:29:05 -0800, ... }
-      era_date_pairs = eras.inject({}) {|h,e| h[e] = Chronic.parse(e); h }
-          
-      # Sort eras oldest to newest
-      eras = eras.sort_by {|era| Chronic.parse(era) }
-      # .. or newest to oldest
-      eras = eras.reverse unless order == :desc
-    
-      if order == :desc
-
-        # Initialize all hash keys chronologically (newest to oldest)
-        eras.reverse.each {|era| self[era] = [] }
-        
-        # Find the oldest era in which each object was created
-        collection.each do |obj|
-          # puts ("\n #{obj.send(options[:date_attr])} < #{era_date_pairs[era]}")
-          era = eras.find {|era| obj.send(options[:date_attr]) < era_date_pairs[era]  }
-          self[era] << obj
+      collection.each do |obj|
+        era = eras.find do |era|
+          if order == :future
+            # Find newest possible era for the object
+            obj.send(options[:date_attr]) > era_date_pairs[era]
+          else
+            # Find oldest possible era for the object
+            obj.send(options[:date_attr]) < era_date_pairs[era]
+          end
         end
-      else
-        
-        # Initialize all hash keys chronologically (oldest to newest)
-        eras.reverse.each {|era| self[era] = [] }
-        
-        # Find the newest era in which each object was created
-        collection.each do |obj|
-          era = eras.find {|era| obj.send(options[:date_attr]) > era_date_pairs[era]  }
-          self[era] << obj
-        end
+        self[era] << obj
       end
     
-      # Remove keys for empty eras
+      # Remove empty eras
       self.keys.each {|k| self.delete(k) if self[k].empty? }
     
       self
